@@ -57,7 +57,7 @@
           localStorage.setItem('huntUserID', docRef.id);
 
           // Redirect to start page with userID param
-          window.location.href = start.html?userID=${encodeURIComponent(docRef.id)};
+          window.location.href = `start.html?userID=${encodeURIComponent(docRef.id)}`;
 
         } catch (error) {
           console.error("Error registering user:", error);
