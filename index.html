@@ -15,23 +15,19 @@
       Email:<br>
       <input type="email" name="email" required>
     </label><br><br>
-    <label>
-      <input type="checkbox" name="isVolunteer">
-      I’d like to volunteer
-    </label><br><br>
     <button type="submit">Register</button>
   </form>
 
   <script>
+    // Replace this with the URL you get when you deploy your Apps Script as a web app:
     const scriptURL = 'PASTE_YOUR_WEB_APP_URL_HERE';
 
     document.getElementById('regForm').addEventListener('submit', e => {
       e.preventDefault();
       const form = e.target;
       const data = {
-        name: form.name.value.trim(),
-        email: form.email.value.trim(),
-        isVolunteer: form.isVolunteer.checked.toString()
+        name:  form.name.value.trim(),
+        email: form.email.value.trim()
       };
 
       fetch(scriptURL, {
@@ -40,15 +36,13 @@
       })
       .then(r => r.json())
       .then(resp => {
-        // Save userID and move to next step
         localStorage.setItem('huntUserID', resp.userID);
         alert('Registered! Your ID: ' + resp.userID);
-        // Optionally redirect to your start page:
-        // window.location.href = `start.html?userID=${resp.userID}`;
+        // e.g. window.location.href = `start.html?userID=${resp.userID}`;
       })
       .catch(err => {
         console.error(err);
-        alert('Registration failed. Try again.');
+        alert('Registration failed. Please try again.');
       });
     });
   </script>
