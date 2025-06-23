@@ -38,6 +38,11 @@
       .then(resp => {
         localStorage.setItem('huntUserID', resp.userID);
         alert('Registered! Your ID: ' + resp.userID);
+        // after you get resp.userID …
+        localStorage.setItem('huntUserID', resp.userID);
+        // redirect to the dashboard page, carrying userID
+        window.location.href = `start.html?userID=${encodeURIComponent(resp.userID)}`;
+
         // e.g. window.location.href = `start.html?userID=${resp.userID}`;
       })
       .catch(err => {
