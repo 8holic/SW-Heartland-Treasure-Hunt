@@ -60,9 +60,8 @@
             await updateDoc(userDocRef, {
               [`stationsCompleted.${station}`]: true
             });
-
-            alert(`✅ ${station} marked as completed! Reloading...`);
-            window.location.href = `dashboard.html?userID=${scannedUserID}`;
+          alert(`✅ ${station} marked as completed! Reloading...`);
+          window.location.href = `dashboard.html?userID=${storedUserID}`;
           } catch (err) {
             console.error("QR scan error:", err);
             alert("Failed to process QR code.");
