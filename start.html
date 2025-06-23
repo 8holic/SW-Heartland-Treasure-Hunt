@@ -1,52 +1,54 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8">
-  <title>Treasure Hunt Dashboard</title>
-  <style>
-    .hint { margin: 1em 0; }
-    .complete { text-decoration: line-through; color: gray; }
-  </style>
-</head>
-<body>
-  <h1>Your Treasure Hunt</h1>
-  <div id="hints">
-    <div class="hint" id="hintA">🔍 Hint A: [describe station A]</div>
-    <div class="hint" id="hintB">🔍 Hint B: [describe station B]</div>
-    <div class="hint" id="hintC">🔍 Hint C: [describe station C]</div>
-    <div class="hint" id="hintV">🔍 Hint V: [volunteer station]</div>
-  </div>
-  <!-- Later you’ll add your Scan/Code UI here -->
-  
-  <script>
-    // 1) Grab your Web App URL
-    const statusURL = 'https://script.google.com/macros/s/AKfycbyfZ31kPhZxS-m3_jesxX16dn6FI-JrPTHNVPdYufeu7irEJ_BKTnS7xu_8Wklh1EpBQw/exec'; // include trailing '?' 
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
+  import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
-    // 2) Recover userID (URL param → localStorage)
-    const params = new URLSearchParams(window.location.search);
-    let userID = params.get('userID') || localStorage.getItem('huntUserID');
-    if (!userID) {
-      alert('No userID—please register first.');
-      window.location.href = 'index.html';
-    } else {
-      localStorage.setItem('huntUserID', userID);
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_AUTH_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_STORAGE_BUCKET",
+    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+    appId: "YOUR_APP_ID",
+    measurementId: "YOUR_MEASUREMENT_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // 2) Recover userID (URL param → localStorage)
+  const params = new URLSearchParams(window.location.search);
+  let userID = params.get('userID') || localStorage.getItem('huntUserID');
+  if (!userID) {
+    alert('No userID—please register first.');
+    window.location.href = 'index.html';
+  } else {
+    localStorage.setItem('huntUserID', userID);
+  }
+
+  import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+
+  async function fetchUserStatus() {
+    try {
+      const docRef = doc(db, "users", userID);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        alert("User data not found.");
+        return;
+      }
+      const data = docSnap.data();
+
+      // Mark complete if true
+      if (data.stationA) document.getElementById('hintA').classList.add('complete');
+      if (data.stationB) document.getElementById('hintB').classList.add('complete');
+      if (data.stationC) document.getElementById('hintC').classList.add('complete');
+      if (data.stationV) document.getElementById('hintV').classList.add('complete');
+
+    } catch (err) {
+      console.error(err);
+      alert('Could not load your status: ' + err);
     }
+  }
 
-    // 3) Fetch status
-    fetch(statusURL + 'userID=' + encodeURIComponent(userID))
-      .then(r => r.json())
-      .then(data => {
-        if (data.error) throw data.error;
-        // 4) For each station, if true, mark complete
-        if (data.stationA) document.getElementById('hintA').classList.add('complete');
-        if (data.stationB) document.getElementById('hintB').classList.add('complete');
-        if (data.stationC) document.getElementById('hintC').classList.add('complete');
-        if (data.stationV) document.getElementById('hintV').classList.add('complete');
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Could not load your status: ' + err);
-      });
-  </script>
-</body>
-</html>
+  fetchUserStatus();
+
+</script>
