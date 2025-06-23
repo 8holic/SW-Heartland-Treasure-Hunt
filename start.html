@@ -42,15 +42,15 @@
         async (decodedText) => {
           try {
             const url = new URL(decodedText);
-            const scannedUserID = url.searchParams.get("userID");
             const station = url.searchParams.get("station");
+            const storedUserID = localStorage.getItem("huntUserID");
 
-            if (!scannedUserID || !station) {
-              alert("Invalid QR code.");
+            if (!station || !storedUserID) {
+              alert("Invalid QR code or missing user ID.");
               return;
             }
 
-            const userDocRef = doc(db, "users", scannedUserID);
+            const userDocRef = doc(db, "users", storedUserID);
             const userDocSnap = await getDoc(userDocRef);
             if (!userDocSnap.exists()) {
               alert("User not found.");
