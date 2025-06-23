@@ -1,6 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
+  <title>Treasure Hunt Registration</title>
+
+  <!-- Firebase App (the core Firebase SDK) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <!-- Firebase Firestore SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyC70g8YdB4FvcnfnnLvnQKnxZvR8kYziXM",
+  authDomain: "heartland-se.firebaseapp.com",
+  projectId: "heartland-se",
+  storageBucket: "heartland-se.firebasestorage.app",
+  messagingSenderId: "517981430157",
+  appId: "1:517981430157:web:944816b509428f859f9dc4",
+  measurementId: "G-905K6LQJ3L"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+</head>
+
   <meta charset="UTF-8">
   <title>Treasure Hunt Registration</title>
 </head>
