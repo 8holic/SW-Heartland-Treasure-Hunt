@@ -19,7 +19,7 @@
   </form>
 
   <script>
-    // Replace this with the URL you get when you deploy your Apps Script as a web app:
+    // 1) Your Apps Script Web-App URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxnvivHAfdeddtRS96ETie8kG1UsH36GbTVAME7ZvIBQSzw0HRdu-Ya0lCA_l7wtjx-MQ/exec';
 
     document.getElementById('regForm').addEventListener('submit', e => {
@@ -32,18 +32,19 @@
 
       fetch(scriptURL, {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },  // optional but recommended
         body: JSON.stringify(data)
       })
       .then(r => r.json())
       .then(resp => {
+        // 2) Save the userID so we know who they are:
         localStorage.setItem('huntUserID', resp.userID);
-        alert('Registered! Your ID: ' + resp.userID);
-        // after you get resp.userID …
-        localStorage.setItem('huntUserID', resp.userID);
-        // redirect to the dashboard page, carrying userID
+
+        // 3) Redirect them to the next page, carrying their userID in the URL:
         window.location.href = `start.html?userID=${encodeURIComponent(resp.userID)}`;
 
-        // e.g. window.location.href = `start.html?userID=${resp.userID}`;
+        // — you can remove or comment out the alert now:
+        // alert('Registered! Your ID: ' + resp.userID);
       })
       .catch(err => {
         console.error(err);
