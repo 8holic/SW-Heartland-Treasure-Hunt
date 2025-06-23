@@ -40,17 +40,6 @@
       //Get User id
       document.querySelector('#userIDDisplay span').textContent = userID;
 
-      try {
-        const userDocRef = doc(db, "users", userID);
-        const userDocSnap = await getDoc(userDocRef);
-
-        if (!userDocSnap.exists()) {
-          alert('User data not found.');
-          return;
-        }
-
-        const userData = userDocSnap.data();
-
 try {
   const userDocRef = doc(db, "users", userID);
   const userDocSnap = await getDoc(userDocRef);
