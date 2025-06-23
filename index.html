@@ -4,15 +4,38 @@
   <meta charset="UTF-8" />
   <title>Treasure Hunt Registration</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 400px; margin: 2rem auto; }
-    label { display: block; margin-bottom: 0.5rem; }
-    input { width: 100%; padding: 0.5rem; margin-top: 0.2rem; }
-    button { padding: 0.7rem 1.2rem; font-size: 1rem; }
-    h1 { text-align: center; }
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 400px;
+      margin: 2rem auto;
+    }
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.5rem;
+      margin-top: 0.2rem;
+    }
+    button {
+      padding: 0.7rem 1.2rem;
+      font-size: 1rem;
+    }
+    h1 {
+      text-align: center;
+    }
   </style>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      query,
+      where,
+      getDocs
+    } from "https://www.gstatic.com/firebasejs/11.9.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyC70g8YdB4FvcnfnnLvnQKnxZvR8kYziXM",
@@ -26,21 +49,23 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
-    async function findUserByNameEmail(name, email) {
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("name", "==", name), where("email", "==", email));
-    const querySnapshot = await getDocs(q);
-    if (!querySnapshot.empty) {
-      return querySnapshot.docs[0].id;  // return existing userID
-    }
-    return null;
-  }
 
+    async function findUserByNameEmail(name, email) {
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("name", "==", name), where("email", "==", email));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        return querySnapshot.docs[0].id;  // return existing userID
+      }
+      return null;
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
       const form = document.getElementById('regForm');
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
+
         const name = form.name.value.trim();
         const email = form.email.value.trim();
 
@@ -48,32 +73,32 @@
           alert('Please fill out all fields');
           return;
         }
-        
-        // Check if user already exists
-        let userID = await findUserByNameEmail(name, email);
-        
-        if (!userID) {
-          // Create new user if not found
-          const docRef = await addDoc(collection(db, "users"), {
-            name,
-            email,
-            registeredAt: new Date().toISOString(),
-            stationsCompleted: {
-              station1: false,
-              station2: false,
-              station3: false,
-              station4: false
-            }
-          });
-          userID = docRef.id;
-        }
 
-// Save the Firestore document ID as userID locally
-localStorage.setItem('huntUserID', userID);
+        try {
+          // Check if user already exists
+          let userID = await findUserByNameEmail(name, email);
 
-// Redirect to start page with userID param
-window.location.href = `start.html?userID=${encodeURIComponent(userID)}`;
+          if (!userID) {
+            // Create new user if not found
+            const docRef = await addDoc(collection(db, "users"), {
+              name,
+              email,
+              registeredAt: new Date().toISOString(),
+              stationsCompleted: {
+                station1: false,
+                station2: false,
+                station3: false,
+                station4: false
+              }
+            });
+            userID = docRef.id;
+          }
 
+          // Save the Firestore document ID as userID locally
+          localStorage.setItem('huntUserID', userID);
+
+          // Redirect to start page with userID param
+          window.location.href = `start.html?userID=${encodeURIComponent(userID)}`;
 
         } catch (error) {
           console.error("Error registering user:", error);
