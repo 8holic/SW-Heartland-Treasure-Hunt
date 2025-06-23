@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Treasure Hunt Registration</title>
+</head>
+<body>
+  <h1>Register for Treasure Hunt</h1>
+  <form id="regForm">
+    <label>
+      Name:<br>
+      <input type="text" name="name" required>
+    </label><br><br>
+    <label>
+      Email:<br>
+      <input type="email" name="email" required>
+    </label><br><br>
+    <button type="submit">Register</button>
+  </form>
+
+  <script>
+    // 1) Your Apps Script Web-App URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxnvivHAfdeddtRS96ETie8kG1UsH36GbTVAME7ZvIBQSzw0HRdu-Ya0lCA_l7wtjx-MQ/exec';
+
+    document.getElementById('regForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        name:  form.name.value.trim(),
+        email: form.email.value.trim()
+      };
+
+      fetch(scriptURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },  // optional but recommended
+        body: JSON.stringify(data)
+      })
+      .then(r => r.json())
+      .then(resp => {
+        // 2) Save the userID so we know who they are:
+        localStorage.setItem('huntUserID', resp.userID);
+
+        // 3) Redirect them to the next page, carrying their userID in the URL:
+        window.location.href = `start.html?userID=${encodeURIComponent(resp.userID)}`;
+
+        // — you can remove or comment out the alert now:
+        // alert('Registered! Your ID: ' + resp.userID);
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Registration failed. Please try again.');
+      });
+    });
+  </script>
+</body>
+</html>
