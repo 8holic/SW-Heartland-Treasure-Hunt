@@ -2,55 +2,51 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Treasure Hunt Registration</title>
+  <title>Treasure Hunt Dashboard</title>
+  <style>
+    .hint { margin: 1em 0; }
+    .complete { text-decoration: line-through; color: gray; }
+  </style>
 </head>
 <body>
-  <h1>Register for Treasure Hunt</h1>
-  <form id="regForm">
-    <label>
-      Name:<br>
-      <input type="text" name="name" required>
-    </label><br><br>
-    <label>
-      Email:<br>
-      <input type="email" name="email" required>
-    </label><br><br>
-    <button type="submit">Register</button>
-  </form>
-
+  <h1>Your Treasure Hunt</h1>
+  <div id="hints">
+    <div class="hint" id="hintA">🔍 Hint A: [describe station A]</div>
+    <div class="hint" id="hintB">🔍 Hint B: [describe station B]</div>
+    <div class="hint" id="hintC">🔍 Hint C: [describe station C]</div>
+    <div class="hint" id="hintV">🔍 Hint V: [volunteer station]</div>
+  </div>
+  <!-- Later you’ll add your Scan/Code UI here -->
+  
   <script>
-    // 1) Your Apps Script Web-App URL
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxnvivHAfdeddtRS96ETie8kG1UsH36GbTVAME7ZvIBQSzw0HRdu-Ya0lCA_l7wtjx-MQ/exec';
+    // 1) Grab your Web App URL
+    const statusURL = 'PASTE_YOUR_WEB_APP_URL_HERE?'; // include trailing '?' 
 
-    document.getElementById('regForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const form = e.target;
-      const data = {
-        name:  form.name.value.trim(),
-        email: form.email.value.trim()
-      };
+    // 2) Recover userID (URL param → localStorage)
+    const params = new URLSearchParams(window.location.search);
+    let userID = params.get('userID') || localStorage.getItem('huntUserID');
+    if (!userID) {
+      alert('No userID—please register first.');
+      window.location.href = 'index.html';
+    } else {
+      localStorage.setItem('huntUserID', userID);
+    }
 
-      fetch(scriptURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },  // optional but recommended
-        body: JSON.stringify(data)
-      })
+    // 3) Fetch status
+    fetch(statusURL + 'userID=' + encodeURIComponent(userID))
       .then(r => r.json())
-      .then(resp => {
-        // 2) Save the userID so we know who they are:
-        localStorage.setItem('huntUserID', resp.userID);
-
-        // 3) Redirect them to the next page, carrying their userID in the URL:
-        window.location.href = `start.html?userID=${encodeURIComponent(resp.userID)}`;
-
-        // — you can remove or comment out the alert now:
-        // alert('Registered! Your ID: ' + resp.userID);
+      .then(data => {
+        if (data.error) throw data.error;
+        // 4) For each station, if true, mark complete
+        if (data.stationA) document.getElementById('hintA').classList.add('complete');
+        if (data.stationB) document.getElementById('hintB').classList.add('complete');
+        if (data.stationC) document.getElementById('hintC').classList.add('complete');
+        if (data.stationV) document.getElementById('hintV').classList.add('complete');
       })
       .catch(err => {
         console.error(err);
-        alert('Registration failed. Please try again.');
+        alert('Could not load your status: ' + err);
       });
-    });
   </script>
 </body>
 </html>
