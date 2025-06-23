@@ -37,6 +37,8 @@
       }
 
       localStorage.setItem('huntUserID', userID);
+      //Get User id
+      document.querySelector('#userIDDisplay span').textContent = userID;
 
       try {
         const userDocRef = doc(db, "users", userID);
@@ -94,9 +96,14 @@ try {
 </head>
 <body>
   <h1>Your Treasure Hunt</h1>
+  <p id="userIDDisplay"><strong>Your ID:</strong> <span></span></p>
+  <button onclick="navigator.clipboard.writeText(window.location.href)">Copy Your Resume Link</button>
+
   <div class="hint" id="hint1">🔍 Hint 1: [describe station 1]</div>
   <div class="hint" id="hint2">🔍 Hint 2: [describe station 2]</div>
   <div class="hint" id="hint3">🔍 Hint 3: [describe station 3]</div>
   <div class="hint" id="hint4">🔍 Hint 4: [describe station 4]</div>
+</body>
+
 </body>
 </html>
